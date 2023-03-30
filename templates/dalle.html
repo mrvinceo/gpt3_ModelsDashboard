@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+
+{% block title %}Dall-E2 OCA Demo{% endblock %}
+
+{% block content %}
+
+<!-- Begin page content -->
+<main class="flex-shrink-0">
+  <div class="container">
+    <br>
+    <br>
+    <h1 class="mt-5">OCA Dall-E2 AI demo</h1>
+    <p class="lead">
+      This project is for OCA educational purposes, to demonstrate the use of OpenAi's Dalle model within a Flask app.</p>
+    <p>Try prompts that include some detail, e.g.<em> "Image of a group of pedestrians walking down the Rue Mouffetard, all looking down at their mobile phones, in the style of Van Gogh."</em></p>
+
+    <div id="list-group" class="list-group w-auto">
+                                <a href="#" class="list-group-item list-group-item-action d-flex gap-3 py-3">
+                                <img src="{{ url_for('static', filename='images/favicon.ico') }}" alt="twbs" width="32" height="32" class="rounded-circle flex-shrink-0">
+                                <div class="d-flex gap-2 w-100 justify-content-between">
+                                        <div>
+						<p class="mb-0 opacity-75">Hi {{ name }}, I'm Elliot, your friendly OCA image generator. Please describe what you'd like me to create for you.</p>
+                                        </div>
+                                </div>
+                                </a>
+
+
+    </div>
+	    <div class="input-group mb-3">
+        <input type="text" class="form-control" id="chat-input">
+        <div class="input-group-append">
+          <button id="gpt-button" class="btn btn-primary">Send Request</button>
+        </div>
+      </div>
+
+
+
+  </div>
+</main>
+
+    <script src="https://kit.fontawesome.com/3910ac614c.js" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
+
+    <script>
+	$("#gpt-button").click(function(){
+	var question = $("#chat-input").val();
+	
+	    let html_data = '';
+	    html_data += `
+		<a href="#" class="list-group-item list-group-item-action d-flex gap-3 py-3">
+	   <img class="rounded-circle float-start" width="50" height="50px" alt="{{ name }}'s avatar image" src="{{ profile }}" />
+	   	<div class="d-flex gap-2 w-100 justify-content-between">
+    			<div>
+	   <p class="mb-0 opacity-75">${question}</p>
+    			</div>
+  		</div>
+		</a>
+	    `;
+	    $("#chat-input").val('');
+	    $("#list-group").append(html_data);
+	    //AJAX CALL TO SERVER
+	    $.ajax({
+		type: "POST",
+		url: "/dalle",
+		data: {'imgprompt': question},
+		success: function (data) {
+			let gpt_data = '';
+			gpt_data += `
+	   	        	<a href="#" class="list-group-item list-group-item-action d-flex gap-3 py-3">
+                		<img src="{{ url_for('static', filename='images/favicon.ico') }}" alt="twbs" width="32" height="32" class="rounded-circle flex-shrink-0">
+                		<div class="d-flex gap-2 w-100 justify-content-between">
+                        		<div>
+                        			<p class="mb-0 opacity-75"><img src="static/${data.file}" alt="${question}" /></p>
+
+	   				</div>
+                		</div>
+                		</a>
+	   		`;
+			$("#list-group").append(gpt_data);
+		}
+	});
+	});
+    </script>
+
+{% endblock %}
