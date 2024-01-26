@@ -81,6 +81,8 @@ def index():
         #return '<a class="button" href="/login">OCA Google Login</a>'
 
 
+# image generation
+
 @app.route("/dalle", methods = ['POST','GET'])
 def dalle():
     if current_user.is_authenticated:
@@ -97,7 +99,7 @@ def dalle():
         return render_template('loggedout.html')
         #return '<a class="button" href="/login">OCA Google Login</a>'
 
-
+# showcase of truth
 @app.route("/guru", methods = ['POST','GET'])
 def guru():
     if current_user.is_authenticated:
